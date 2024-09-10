@@ -1,0 +1,17 @@
+# Inecesarios
+appsettings.json
+appsettings.Development.json
+
+# Directorios de compilación
+bin/
+obj/
+
+# Archivos de proyecto y configuración de Visual Studio
+.vs/
+*.sln
+*.csproj
+*.csproj.user
+
+# Archivos específicos
+Properties/
+preguntameWebAPI.http

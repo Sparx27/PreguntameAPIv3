@@ -1,0 +1,6 @@
+@PreguntameAPIv3_HostAddress = http://localhost:5287
+
+GET {{PreguntameAPIv3_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
