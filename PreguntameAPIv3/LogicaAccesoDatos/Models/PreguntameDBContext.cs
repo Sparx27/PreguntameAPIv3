@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PreguntameAPIv3.LogicaAccesoDatos.Models;
 
-public partial class PreguntameDBContext : DbContext
+public partial class PreguntameDbContext : DbContext
 {
-    public PreguntameDBContext(DbContextOptions<PreguntameDBContext> options)
+    public PreguntameDbContext(DbContextOptions<PreguntameDbContext> options)
         : base(options)
     {
     }
@@ -25,14 +25,19 @@ public partial class PreguntameDBContext : DbContext
     {
         modelBuilder.Entity<Like>(entity =>
         {
-            entity.HasKey(e => new { e.IdRespuesta, e.IdUsuario }).HasName("pk_likes");
+            entity.HasKey(e => new { e.IdRespuesta, e.IdUsuarioEnvia, e.UsernameUsuarioRecibe }).HasName("pk_likes");
 
             entity.HasIndex(e => e.IdRespuesta, "idx_RespuestaLike");
 
-            entity.HasIndex(e => e.IdUsuario, "idx_UsuarioLike");
+            entity.HasIndex(e => e.IdUsuarioEnvia, "idx_UsuarioEnviaLike");
+
+            entity.HasIndex(e => e.UsernameUsuarioRecibe, "idx_UsuarioRecibeLike");
 
             entity.Property(e => e.IdRespuesta).HasColumnName("ID_Respuesta");
-            entity.Property(e => e.IdUsuario).HasColumnName("ID_Usuario");
+            entity.Property(e => e.IdUsuarioEnvia).HasColumnName("ID_Usuario_Envia");
+            entity.Property(e => e.UsernameUsuarioRecibe)
+                .HasMaxLength(20)
+                .HasColumnName("Username_Usuario_Recibe");
             entity.Property(e => e.Existe).HasDefaultValue(true);
 
             entity.HasOne(d => d.IdRespuestaNavigation).WithMany(p => p.Likes)
@@ -40,19 +45,25 @@ public partial class PreguntameDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_respuesta");
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Likes)
-                .HasForeignKey(d => d.IdUsuario)
+            entity.HasOne(d => d.IdUsuarioEnviaNavigation).WithMany(p => p.LikeIdUsuarioEnviaNavigations)
+                .HasForeignKey(d => d.IdUsuarioEnvia)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_usuario");
+                .HasConstraintName("fk_Usuario_Envia");
+
+            entity.HasOne(d => d.UsernameUsuarioRecibeNavigation).WithMany(p => p.LikeUsernameUsuarioRecibeNavigations)
+                .HasPrincipalKey(p => p.Username)
+                .HasForeignKey(d => d.UsernameUsuarioRecibe)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Usuario_Recibe");
         });
 
         modelBuilder.Entity<Paise>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Paises__3214EC2701F9091A");
+            entity.HasKey(e => e.Id).HasName("PK__Paises__3214EC2744F7CD65");
 
-            entity.HasIndex(e => e.Nombre, "UQ__Paises__75E3EFCF7FE82777").IsUnique();
+            entity.HasIndex(e => e.Nombre, "UQ__Paises__75E3EFCF03509B14").IsUnique();
 
-            entity.HasIndex(e => e.Abr, "UQ__Paises__C69676F092930D46").IsUnique();
+            entity.HasIndex(e => e.Abr, "UQ__Paises__C69676F085B102F3").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newsequentialid())")
@@ -63,8 +74,6 @@ public partial class PreguntameDBContext : DbContext
 
         modelBuilder.Entity<Pregunta>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Pregunta__3214EC27AB2DE3A8");
-
             entity.HasIndex(e => e.UsuarioEnvia, "IX_Usuario_Envia");
 
             entity.HasIndex(e => e.UsuarioRecibe, "IX_Usuario_Recibe");
@@ -98,11 +107,9 @@ public partial class PreguntameDBContext : DbContext
 
         modelBuilder.Entity<Respuesta>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Respuest__3214EC274F7EED57");
+            entity.HasIndex(e => e.PreguntaId, "IX_PreguntaID");
 
-            entity.HasIndex(e => e.PreguntaId, "IX_Pregunta_ID");
-
-            entity.HasIndex(e => e.PreguntaId, "UQ__Respuest__AE606F85CA495C42").IsUnique();
+            entity.HasIndex(e => e.PreguntaId, "UQ_PreguntaIDRespuestas").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newsequentialid())")
@@ -122,11 +129,9 @@ public partial class PreguntameDBContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC274D46D8C2");
+            entity.HasIndex(e => e.Email, "UQ_Email").IsUnique();
 
-            entity.HasIndex(e => e.Username, "UQ__Usuarios__536C85E43A73DE7F").IsUnique();
-
-            entity.HasIndex(e => e.Email, "UQ__Usuarios__A9D10534F3B1298C").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ_Username").IsUnique();
 
             entity.HasIndex(e => e.Apellido, "idx_ApellidoUsuario");
 
@@ -140,7 +145,7 @@ public partial class PreguntameDBContext : DbContext
                 .HasDefaultValueSql("(newsequentialid())")
                 .HasColumnName("ID");
             entity.Property(e => e.Activo).HasDefaultValue(true);
-            entity.Property(e => e.Apellido).HasMaxLength(30);
+            entity.Property(e => e.Apellido).HasMaxLength(40);
             entity.Property(e => e.Bio)
                 .HasMaxLength(150)
                 .HasColumnName("bio");
@@ -165,7 +170,7 @@ public partial class PreguntameDBContext : DbContext
 
             entity.HasOne(d => d.Pais).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.PaisId)
-                .HasConstraintName("FK_Pais");
+                .HasConstraintName("FK_PaisUsuarios");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -76,7 +76,7 @@ namespace PreguntameAPIv3.LogicaAplicacion.CasosDeUso
         public async Task ToggleLike(LikeInsertDTO likeInsertDTO)
         {
             
-            if (String.IsNullOrEmpty(likeInsertDTO.IdRespuesta) || String.IsNullOrEmpty(likeInsertDTO.IdUsuario))
+            if (String.IsNullOrEmpty(likeInsertDTO.IdRespuesta) || String.IsNullOrEmpty(likeInsertDTO.IdUsuarioEnvia))
             {
                 throw new LikeException("Falta el ID de la Respuesta o el ID del Usuario en el envío de datos de Like");
             }

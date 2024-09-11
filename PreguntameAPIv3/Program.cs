@@ -13,7 +13,7 @@ using System.Text.Json;
 var builder = WebApplication.CreateBuilder(args);
 
 // DBContext
-builder.Services.AddDbContext<PreguntameDBContext>(opts =>
+builder.Services.AddDbContext<PreguntameDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("PreguntameDB"))
 );
 

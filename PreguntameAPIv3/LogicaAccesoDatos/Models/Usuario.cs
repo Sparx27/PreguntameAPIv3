@@ -33,7 +33,9 @@ public partial class Usuario
 
     public int NSeguidores { get; set; }
 
-    public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
+    public virtual ICollection<Like> LikeIdUsuarioEnviaNavigations { get; set; } = new List<Like>();
+
+    public virtual ICollection<Like> LikeUsernameUsuarioRecibeNavigations { get; set; } = new List<Like>();
 
     public virtual Paise? Pais { get; set; }
 

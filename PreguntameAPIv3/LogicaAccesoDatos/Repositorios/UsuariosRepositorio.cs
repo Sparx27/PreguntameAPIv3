@@ -6,8 +6,8 @@ namespace PreguntameAPIv3.LogicaAccesoDatos.Repositorios
 {
     public class UsuariosRepositorio : IUsuariosRepositorio<Usuario>
     {
-        private PreguntameDBContext _context;
-        public UsuariosRepositorio(PreguntameDBContext context)
+        private PreguntameDbContext _context;
+        public UsuariosRepositorio(PreguntameDbContext context)
         {
             _context = context;
         }

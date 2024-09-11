@@ -25,7 +25,7 @@ namespace PreguntameAPIv3.Compartido.Mappers
                 FechaPregunta = respuesta.Pregunta.Fecha,
                 LikeUsuarioLog = usuarioLogId is null 
                     ? false 
-                    : respuesta.Likes.FirstOrDefault(l => l.IdUsuario == usuarioLogId) is null
+                    : respuesta.Likes.FirstOrDefault(l => l.IdUsuarioEnvia == usuarioLogId) is null
                         ? false
                         : true
             };
@@ -85,7 +85,8 @@ namespace PreguntameAPIv3.Compartido.Mappers
             return new Like
             {
                 IdRespuesta = new Guid(likeInsertDTO.IdRespuesta),
-                IdUsuario = new Guid(likeInsertDTO.IdUsuario)
+                IdUsuarioEnvia = new Guid(likeInsertDTO.IdUsuarioEnvia),
+                UsernameUsuarioRecibe = likeInsertDTO.UsernameUsuarioRecibe
             };
         }
     }

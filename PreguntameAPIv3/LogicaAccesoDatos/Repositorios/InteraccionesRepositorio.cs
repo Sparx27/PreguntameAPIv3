@@ -8,8 +8,8 @@ namespace PreguntameAPIv3.LogicaAccesoDatos.Repositorios
 {
     public class InteraccionesRepositorio : IInteraccionesRepositorio
     {
-        private PreguntameDBContext _context;
-        public InteraccionesRepositorio(PreguntameDBContext context)
+        private PreguntameDbContext _context;
+        public InteraccionesRepositorio(PreguntameDbContext context)
         {
             _context = context;
         }
@@ -54,7 +54,7 @@ namespace PreguntameAPIv3.LogicaAccesoDatos.Repositorios
 
         public async Task ToggleLike(Like like)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == like.IdUsuario);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Username == like.UsernameUsuarioRecibe);
             if (usuario == null)
             {
                 throw new LikeException("No se encontró al Usuario que intenta dar Like a la Respuesta");
@@ -68,7 +68,11 @@ namespace PreguntameAPIv3.LogicaAccesoDatos.Repositorios
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                var yaSeDioLike = await _context.Likes.FirstOrDefaultAsync(l => l.IdRespuesta == like.IdRespuesta && l.IdUsuario == like.IdUsuario);
+                var yaSeDioLike = await _context.Likes.FirstOrDefaultAsync(l => 
+                    l.IdRespuesta == like.IdRespuesta && 
+                    l.IdUsuarioEnvia == like.IdUsuarioEnvia && 
+                    l.UsernameUsuarioRecibe == like.UsernameUsuarioRecibe
+                );
 
                 if(yaSeDioLike == null)
                 {

@@ -57,7 +57,7 @@ namespace PreguntameAPIv3.Controllers
                 return BadRequest(new { Message = "No se reconoce al usuario que solicita esta acción" });
             }
 
-            likeInsertDTO.IdUsuario = usuarioId;
+            likeInsertDTO.IdUsuarioEnvia = usuarioId;
 
             try
             {
